@@ -35,7 +35,7 @@ pipeline {
                 // Check if Jenkins is running on Linux, using sh (shell) instead of bat for Linux
                 sh '''
                     export HEADLESS=false
-                    xvfb-run -a C:/Users/dhira/AppData/Local/Programs/Python/Python311/python.exe -m pytest tests_headless_false/ --html=report_playwright_bdd_nonheadless.html --maxfail=3 --disable-warnings -v
+                     C:/Users/dhira/AppData/Local/Programs/Python/Python311/python.exe -m pytest tests_headless_false/ --html=report_playwright_bdd_nonheadless.html --maxfail=3 --disable-warnings -v
                 '''
             }
         }
