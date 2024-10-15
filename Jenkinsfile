@@ -4,7 +4,9 @@ pipeline {
         stage('Checkout') {
             steps {
                 // Checkout from dev-env branch
-                git branch: 'dev-env', url: 'https://github.com/rinkugupta3/Automation_Dockerfile'
+                // git branch: 'dev-env', url: 'https://github.com/rinkugupta3/Automation_Dockerfile'
+                // main branch
+                git branch: 'main', url: 'https://github.com/rinkugupta3/Automation_Dockerfile'
             }
         }
         stage('Set up Python environment') {
@@ -21,12 +23,20 @@ pipeline {
         }
         stage('Run Headless Tests') {
             steps {
-                bat "C:/Users/dhira/AppData/Local/Programs/Python/Python311/python.exe -m pytest --html=report_playwright_bdd_headless.html"
+                // Run headless tests from the 'tests' folder
+                bat '''
+                    set HEADLESS=true
+                    C:/Users/dhira/AppData/Local/Programs/Python/Python311/python.exe -m pytest tests/ --html=report_playwright_bdd_headless.html --maxfail=3 --disable-warnings -v
+                '''
             }
         }
         stage('Run Non-Headless Tests') {
             steps {
-                bat "C:/Users/dhira/AppData/Local/Programs/Python/Python311/python.exe -m pytest --html=report_playwright_bdd_nonheadless.html"
+                // Check if Jenkins is running on Linux, using sh (shell) instead of bat for Linux
+                sh '''
+                    export HEADLESS=false
+                    xvfb-run -a C:/Users/dhira/AppData/Local/Programs/Python/Python311/python.exe -m pytest tests_headless_false/ --html=report_playwright_bdd_nonheadless.html --maxfail=3 --disable-warnings -v
+                '''
             }
         }
     }

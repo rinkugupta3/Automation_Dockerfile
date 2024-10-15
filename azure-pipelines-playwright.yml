@@ -6,11 +6,11 @@ trigger:
       - dev
 
 pool:
-  vmImage: 'ubuntu-latest'  # Or change to 'windows-latest' if needed
+  vmImage: 'ubuntu-latest'
 
 variables:
   PipCache: $(Pipeline.Workspace)/.pip_cache
-  HEADLESS: 'true'  # Run tests in headless mode by default
+  HEADLESS: 'true'
 
 stages:
   - stage: HeadlessTests
@@ -18,18 +18,15 @@ stages:
     jobs:
       - job: RunHeadless
         steps:
-          # Set up Python environment
           - task: UsePythonVersion@0
             inputs:
-              versionSpec: '3.11'  # Specify your Python version here and check locally with "python --version"
+              versionSpec: '3.11'
               addToPath: true
 
-          # Create Pip Cache Directory
           - script: |
               mkdir "$(PipCache)" || echo "Cache directory already exists"
             displayName: 'Create Pip Cache Directory'
 
-          # Cache Python packages
           - task: Cache@2
             inputs:
               key: 'python | "$(Agent.OS)"  | requirements.txt'
@@ -38,52 +35,45 @@ stages:
               path: $(PipCache)
             continueOnError: true
 
-          # Install Python dependencies
           - script: |
               python -m pip install --upgrade pip
               pip install -r requirements.txt
               pip install pytest-html
             displayName: 'Install Python Dependencies'
 
-          # Install Playwright Browsers
           - script: |
               python -m playwright install --with-deps
             displayName: 'Install Playwright Browsers with Dependencies'
 
-          # Run Playwright BDD Tests with headless mode enabled
           - script: |
-              export HEADLESS=true  # Ensure headless mode for CI
-              pytest --html=report_playwright_bdd.html --maxfail=3 --disable-warnings -v
+              export HEADLESS=true
+              pytest tests/ --html=report_playwright_bdd.html --maxfail=3 --disable-warnings -v
             displayName: 'Run Headless Playwright BDD Tests'
 
-          # Publish HTML report as artifact
           - task: PublishBuildArtifacts@1
             inputs:
               PathtoPublish: 'report_playwright_bdd.html'
               ArtifactName: 'TestReport'
 
-          # Publish screenshots folder
           - task: PublishPipelineArtifact@1
             inputs:
               targetPath: 'screenshots'
 
+  # Stage for running tests in non-headless mode
   - stage: NonHeadlessTests
     displayName: 'Run Non-Headless Tests'
     jobs:
       - job: RunNonHeadless
         steps:
-          # Set up Python environment
           - task: UsePythonVersion@0
             inputs:
-              versionSpec: '3.11'  # Specify your Python version here and check locally with "python --version"
+              versionSpec: '3.11'
               addToPath: true
 
-          # Create Pip Cache Directory
           - script: |
               mkdir "$(PipCache)" || echo "Cache directory already exists"
             displayName: 'Create Pip Cache Directory'
 
-          # Cache Python packages
           - task: Cache@2
             inputs:
               key: 'python | "$(Agent.OS)"  | requirements.txt'
@@ -92,31 +82,28 @@ stages:
               path: $(PipCache)
             continueOnError: true
 
-          # Install Python dependencies
           - script: |
               python -m pip install --upgrade pip
               pip install -r requirements.txt
               pip install pytest-html
             displayName: 'Install Python Dependencies'
 
-          # Install Playwright Browsers
           - script: |
               python -m playwright install --with-deps
             displayName: 'Install Playwright Browsers with Dependencies'
 
-          # Run Playwright BDD Tests with headless mode disabled
+          # Run Playwright non-headless tests using xvfb-run
+          # xvfb - virtual display on Linux for running GUI applications
           - script: |
-              export HEADLESS=false  # Ensure non-headless mode
-              pytest --html=report_playwright_bdd_nonheadless.html --maxfail=3 --disable-warnings -v
-            displayName: 'Run Non-Headless Playwright BDD Tests'
+              export HEADLESS=false
+              xvfb-run -a pytest tests_headless_false/ --html=report_playwright_bdd_nonheadless.html --maxfail=3 --disable-warnings -v
+            displayName: 'Run Non-Headless Playwright BDD Tests using xvfb'
 
-          # Publish HTML report as artifact
           - task: PublishBuildArtifacts@1
             inputs:
               PathtoPublish: 'report_playwright_bdd_nonheadless.html'
               ArtifactName: 'NonHeadlessTestReport'
 
-          # Publish screenshots folder
           - task: PublishPipelineArtifact@1
             inputs:
               targetPath: 'screenshots'

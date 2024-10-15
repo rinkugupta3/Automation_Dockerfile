@@ -75,7 +75,7 @@ def navigate_to_login_page(page: Page):
     handle_navigate_to_login_page(page)
 
 
-def perform_login_with_jason_data(page: Page, username: str, password: str):
+def perform_login_with_json_data(page: Page, username: str, password: str):
     handle_perform_login_with_json_data(page, username, password)
 
 
@@ -108,7 +108,7 @@ def perform_test(page: Page, screenshots_dir: str):
 
         try:
             # Perform login with the loaded credentials
-            perform_login_with_jason_data(page, username, password)
+            perform_login_with_json_data(page, username, password)
             capture_screenshot(page, screenshots_dir, f"after_login_{username}.png")
 
             # Check if the login should be successful
