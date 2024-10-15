@@ -4,8 +4,6 @@ pipeline {
         stage('Checkout') {
             steps {
                 // Checkout from dev-env branch
-                // git branch: 'dev-env', url: 'https://github.com/rinkugupta3/Automation_Dockerfile'
-                // main branch
                 git branch: 'main', url: 'https://github.com/rinkugupta3/Automation_Dockerfile'
             }
         }
@@ -32,10 +30,10 @@ pipeline {
         }
         stage('Run Non-Headless Tests') {
             steps {
-                // Check if Jenkins is running on Linux, using sh (shell) instead of bat for Linux
-                sh '''
-                    export HEADLESS=false
-                     C:/Users/dhira/AppData/Local/Programs/Python/Python311/python.exe -m pytest tests_headless_false/ --html=report_playwright_bdd_nonheadless.html --maxfail=3 --disable-warnings -v
+                // Use the bat command instead of sh for running on Windows
+                bat '''
+                    set HEADLESS=false
+                    C:/Users/dhira/AppData/Local/Programs/Python/Python311/python.exe -m pytest tests_headless_false/ --html=report_playwright_bdd_nonheadless.html --maxfail=3 --disable-warnings -v
                 '''
             }
         }
