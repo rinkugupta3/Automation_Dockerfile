@@ -3,7 +3,7 @@ from playwright.sync_api import Page
 
 
 def handle_perform_login_with_json_data(page: Page, username: str, password: str):
-    """Perform the login action with jason data."""
+    """Perform the login action with json data."""
     page.fill('input[name="username"]', username)
     page.fill('input[name="password"]', password)
     page.click('button[type="submit"]')

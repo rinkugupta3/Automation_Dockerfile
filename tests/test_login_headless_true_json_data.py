@@ -11,7 +11,7 @@ from modules.navigate_to_login_page import handle_navigate_to_login_page
 from modules.perform_login_with_json_data import handle_perform_login_with_json_data
 from modules.perform_logout import handle_perform_logout
 from modules.perform_logout_redirection_to_login import handle_perform_logout_redirection_to_login
-from tests.test_login_with_json_data import perform_login_with_jason_data
+from tests.test_login_with_json_data import perform_login_with_json_data
 
 # Configure logger
 logging.basicConfig(
@@ -116,7 +116,7 @@ def perform_test(page: Page, screenshots_dir: str):
 
         try:
             # Perform login with the loaded credentials
-            perform_login_with_jason_data(page, username, password)
+            perform_login_with_json_data(page, username, password)
             capture_screenshot(page, screenshots_dir, f"after_login_{username}.png")
 
             # Check if the login should be successful
