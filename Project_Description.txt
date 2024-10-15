@@ -1,0 +1,33 @@
+Project Description: Automation Testing Framework
+Overview
+This project focuses on developing an Automation Testing Framework designed for validating web applications using Python and Playwright. The framework is built to facilitate both headless and non-headless browser testing, ensuring comprehensive coverage and efficiency in testing workflows.
+
+Objectives
+Automated Testing: Implement automated tests for web applications to improve testing efficiency and accuracy, reducing manual effort and human errors.
+Continuous Integration/Continuous Deployment (CI/CD): Integrate with Azure DevOps and Jenkins for seamless automation of the build, test, and deployment processes.
+Containerization: Utilize Docker to create isolated environments for running tests, ensuring consistency across different stages of the development lifecycle.
+Features
+Headless and Non-Headless Modes: Support for running tests in both headless mode (for CI/CD pipelines) and non-headless mode (for local development and debugging).
+Parameterized Testing: Environment variables allow toggling between headless and non-headless testing dynamically.
+HTML Reports: Generate detailed HTML reports of test results using pytest-html, making it easier for stakeholders to review outcomes.
+Screenshots on Failure: Automatically capture screenshots of the application during test failures to aid in debugging.
+Docker Integration: Each mode (headless and non-headless) has its own dedicated Docker container, ensuring a clean and controlled testing environment.
+Architecture
+Testing Framework: Built on pytest and Playwright, providing a robust set of tools for writing and executing tests.
+Directory Structure:
+/tests: Contains scripts configured for headless execution.
+/tests_headless_false: Contains scripts configured for non-headless execution.
+Dockerfiles are configured to exclude unnecessary folders from each respective container.
+CI/CD Integration
+Azure DevOps: The pipeline is configured to trigger on changes in specified branches, ensuring that tests run automatically on each commit. It also caches Python dependencies for faster builds.
+Jenkins: A pipeline is defined to manage the CI/CD workflow, including stages for code checkout, environment setup, and test execution.
+Tools and Technologies
+Programming Language: Python
+Testing Framework: pytest, Playwright
+Containerization: Docker
+CI/CD Tools: Azure DevOps, Jenkins
+Reporting: pytest-html for generating reports
+Benefits
+Improved Test Coverage: Automation ensures that tests are run consistently and thoroughly, reducing the risk of overlooked bugs.
+Faster Feedback Loop: Continuous testing allows for quicker identification and resolution of issues, enhancing the overall development process.
+Streamlined Development: With automated testing and CI/CD integration, developers can focus more on building features rather than manual testing.

@@ -1,0 +1,62 @@
+# Use an official Python runtime as a parent image
+FROM python:3.11
+
+# Set the working directory in the container
+WORKDIR /app
+
+# Install necessary system dependencies for Playwright and Xvfb
+RUN apt-get update && apt-get install -y \
+    libnss3 \
+    libnspr4 \
+    libdbus-1-3 \
+    libatk1.0-0 \
+    libatk-bridge2.0-0 \
+    libcups2 \
+    libdrm2 \
+    libxfixes3 \
+    libxrandr2 \
+    libgbm1 \
+    libxkbcommon0 \
+    libasound2 \
+    libxshmfence1 \
+    libglu1-mesa \
+    xvfb \
+    && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Copy the requirements file into the container at /app
+COPY requirements.txt .
+
+# Copy following files and folders into the container
+COPY .pytest_cache/ .pytest_cache/
+COPY assets/ assets/
+COPY config/ config/
+COPY modules/ modules/
+COPY screenshots/ screenshots/
+COPY test_data/ test_data/
+COPY tests_headless_false/ tests_headless_false/
+COPY pytest.ini .
+COPY azure-pipelines-playwright.yml .
+COPY conftest.py .
+COPY Jenkinsfile .
+COPY main.py .
+COPY report-headless-false-JsonData.html .
+COPY report-headless-true-JsonData.html .
+COPY reportbdd.html .
+COPY reportdbb.html .
+COPY Dockerfile-headless .
+COPY Dockerfile-nonheadless .
+
+# Install Python dependencies
+RUN python -m pip install --upgrade pip && \
+    pip install -r requirements.txt && \
+    pip install pytest-html
+
+# Install Playwright Browsers with Dependencies
+RUN python -m playwright install --with-deps
+
+# Set HEADLESS environment variable to false
+ENV HEADLESS=false
+
+# Xvfb: The command Xvfb :99 -screen 0 1920x1080x24 & starts the X virtual framebuffer on display :99.
+# Command to run Xvfb and then run the tests with headless mode disabled and generate HTML report
+CMD ["sh", "-c", "Xvfb :99 -screen 0 1920x1080x24 & export DISPLAY=:99 && pytest --html=reportbdd.html --self-contained-html --log-cli-level=INFO"]
