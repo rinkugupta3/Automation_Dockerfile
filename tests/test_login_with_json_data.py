@@ -19,7 +19,7 @@ import sys
 import os
 
 # Add the parent directory to the Python path before importing any modules
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '')))
+# sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '')))
 
 # Now you can import from the modules folder
 import json
